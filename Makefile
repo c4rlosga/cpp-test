@@ -2,13 +2,13 @@ SRC_DIR := src
 OBJ_DIR := obj
 BIN_DIR := bin
 
-EXE := $(BIN_DIR)/haiku-cpp
+EXE := $(BIN_DIR)/cpp-test
 SRC := $(wildcard $(SRC_DIR)/*.cpp)
 OBJ := $(SRC:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
 
 CPPFLAGS := -J2 -Iinclude -MMD -MP -Wall -O1 -std=c++14
 LDFLAGS := -s
-LDLIBS :=
+LDLIBS := -lcurl
 
 .PHONY: all clean
 
