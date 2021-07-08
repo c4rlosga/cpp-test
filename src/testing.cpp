@@ -4,6 +4,7 @@
 #include <iostream>
 #include "menu.h"
 #include <curl/curl.h>
+#include <vector>
 
 size_t writeFunction(void *ptr, size_t size, size_t nmemb, std::string* data) {
     data->append((char*) ptr, size * nmemb);
@@ -26,11 +27,30 @@ int main(int argc, const char* argv[]) {
             continue;
         }
 
+        std::vector<std::string> test;
+        
+        test.push_back("test1");
+        test.push_back("2test");
+        test.push_back("test3");
+        test.push_back("4test");
+        test.push_back("5test");
+        test.push_back("6test");
+        test.push_back("7test");
+        test.push_back("8test");
+        test.push_back("9test");
+        test.push_back("10test");
+        
         if (option == menu::MENU_QUIT) {
             printf("Goodbye!\n");
             return 0;
         } else if (option == menu::MENU_LIST) {
             printf("can't list yet!\n");
+        } else if (option == menu::MENU_EDIT) {
+            printf("the current list of items is\n");
+            for (int i = 0; i < test.size(); i++) {
+                printf("item[%d]: contains the string '%s'\n", i, test.at(i).c_str());
+            }
+
         } else if (option == menu::MENU_NEW) {
             printf("curlpp go eat shit\n");
 
