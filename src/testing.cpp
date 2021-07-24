@@ -61,7 +61,15 @@ int main(int argc, const char* argv[]) {
             curl_global_init(CURL_GLOBAL_DEFAULT);
             auto curl = curl_easy_init();
             if (curl) {
-                curl_easy_setopt(curl, CURLOPT_URL, "http://marf.xyz/archive?sql");
+                std::string user_url;
+                std::cout << "JSON URL?: ";
+                std::cin >> user_url;
+                if (user_url.length() <= 8) {
+                    std::cout << "No url given, using default" << std::endl;
+                    user_url = "http://marf.xyz/archive?sql";
+                }
+                std::cout << "Got URL: " << user_url << std::endl;
+                curl_easy_setopt(curl, CURLOPT_URL, user_url.c_str());
                 curl_easy_setopt(curl, CURLOPT_PORT, 8081L);
                 curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 1L);
                 curl_easy_setopt(curl, CURLOPT_MAXREDIRS, 50L);
@@ -80,15 +88,29 @@ int main(int argc, const char* argv[]) {
                 curl_easy_cleanup(curl);
                 curl_global_cleanup();
                 curl = NULL;
-                if (response_string.length() > 0) {
-                    json test = json::parse(response_string);
-                    std::cout << "JSON dump is: " << std::endl << test.dump(4) << std::endl;
-                    // std::cout << test["now"] << std::endl;
-                    long int * epoch = new long int();
-                    *epoch = test["now"];
-                    std::time_t result = std::time(epoch);
-                    std::cout << "Time converted from JSON is: " << std::asctime(std::localtime(&result)) << std::endl;
+                if (response_string.length() <= 1) {
+                    std::cout << "Got invalid JSON. Server down or broken? " << 
+                            std::endl << response_string << std::endl;
+                    std::cout << "Response: " << response_string << std::endl;
+                    continue;
                 }
+                
+                json test = json::parse(response_string);
+                
+                std::cout << "JSON dump is: " << std::endl << test.dump(4) << std::endl;
+                // std::cout << test["now"] << std::endl;
+                
+                long int * epoch = new long int();
+                *epoch = test["now"];
+                std::time_t result = std::time(epoch);
+                
+                if (test["a_bool"] != nullptr) {
+                    bool the_bool = test["a_bool"];
+                    std::cout << "We have a boolean!!: " << the_bool << std::endl;
+                }
+                
+                std::cout << "Time converted from JSON is: " << std::asctime(std::localtime(&result)) << std::endl;
+                
                 
                 // std::cout << "header: " << header_string << std::endl;
                 // std::cout << response_string << std::endl;
